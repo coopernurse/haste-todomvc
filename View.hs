@@ -24,3 +24,4 @@ renderActiveCount ts = (show len) ++ " " ++ (pluralize ("item", "items") len) ++
 renderCompletedCount :: [Todo] -> String
 renderCompletedCount [] = ""
 renderCompletedCount ts = "Clear completed (" ++ (show $ length ts) ++ ")"
+
