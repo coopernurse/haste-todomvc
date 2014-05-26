@@ -2,3 +2,4 @@ main
 *.o
 *.hi
 todo.js
+todo.min.js
