@@ -11,6 +11,7 @@ onTodoKeyUp input todoList k = case k of
   13 -> do
     Just v <- getValue input
     setProp todoList "innerHTML" $ renderTodos $ addTodo [] v
+    setProp input "value" ""
   _  -> return ()
 
 start [todoInput, todoList, toggleAll] = do
