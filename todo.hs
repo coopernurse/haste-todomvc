@@ -30,13 +30,18 @@ onEditTodo tsRef todoList tde k pt = do
   onEvent (todoInputEl tde) OnBlur (onCancelEditTodo tde)
   return ()
 
+onDestroyTodo tsRef todoList tde k pt = do
+  modifyIORef tsRef (\ts -> deleteTodo ts (todoId $ todoModel tde))
+  renderAllTodos tsRef todoList
+
 onToggleComplete tsRef todoList tde k pt = do
   modifyIORef tsRef (\ts -> toggleOneComplete ts (todoId $ todoModel tde))
   renderAllTodos tsRef todoList
 
 bindTodoEvents tsRef todoList tde = do
-  onEvent (todoLabelEl tde) OnDblClick (onEditTodo tsRef todoList tde)
-  onEvent (todoToggleEl tde) OnClick (onToggleComplete tsRef todoList tde)
+  onEvent (todoLabelEl tde)   OnDblClick (onEditTodo tsRef todoList tde)
+  onEvent (todoToggleEl tde)  OnClick    (onToggleComplete tsRef todoList tde)
+  onEvent (todoDestroyEl tde) OnClick    (onDestroyTodo tsRef todoList tde)
 
 onTodoKeyUp tsRef input todoList k = case k of
   13 -> do
