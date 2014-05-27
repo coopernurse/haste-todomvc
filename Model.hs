@@ -12,6 +12,9 @@ filterTodos ts Completed = filter todoComplete ts
 setTodoComplete :: Todo -> Bool -> Todo
 setTodoComplete t b = t { todoComplete = b }
 
+setTodoText :: Todo -> String -> Todo
+setTodoText t s = t { todoText = s }
+
 nextId :: [Todo] -> Int
 nextId [] = 1
 nextId ts = (maximum $ map todoId ts) + 1
@@ -30,6 +33,9 @@ toggleOneComplete ts id = map (\x -> if (todoId x) == id then (toggleComplete x)
 
 setAllComplete :: [Todo] -> [Todo]
 setAllComplete ts = map (\t -> setTodoComplete t True) ts
+
+editOneTodoText :: [Todo] -> Int -> String -> [Todo]
+editOneTodoText ts id s = map (\t -> if (todoId t) == id then (setTodoText t s) else t) ts
 
 completedCount :: [Todo] -> Int 
 completedCount ts = length $ filter todoComplete ts
