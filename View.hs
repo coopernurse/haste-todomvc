@@ -1,20 +1,40 @@
 module View where
 
 import Model
-import Data.List 
+import Haste.DOM
 
-renderTodos :: [Todo] -> String
-renderTodos ts = intercalate "" $ map renderTodo ts
+data TodoElem = TodoElem {
+	todoModel      :: Todo,
+	todoRootEl     :: Elem, 
+	todoToggleEl   :: Elem, 
+	todoDestroyEl  :: Elem,
+	todoLabelEl    :: Elem,
+	todoInputEl    :: Elem
+}
 
-renderTodo :: Todo -> String
-renderTodo t = "<li>" ++
-                  " <div class='view'>" ++
-                  "   <input class='toggle' type='checkbox' />" ++
-                  "   <label>" ++ (todoText t) ++ "</label>" ++
-                  "   <button class='destroy'></button>" ++
-                  " </div>" ++
-                  " <input class='edit' value='" ++ (show $ todoId t) ++ "' />" ++
-                  "</li>"
+renderTodo :: Todo -> IO TodoElem
+renderTodo t = do
+	root    <- newElem "li"
+	viewDiv <- newElem "div"
+	input   <- newElem "input"
+	setClass input "edit" True
+	setProp input "value" (todoText t)
+	toggle <- newElem "input"
+	setClass toggle "toggle" True
+	setProp toggle "type" "checkbox"
+	label <- newElem "label"
+	setProp label "innerHTML" (todoText t)
+	destroy <- newElem "button"
+	setClass destroy "destroy" True
+	setClass viewDiv "view" True
+	if (todoComplete t) then do
+		setProp toggle "checked" "checked" 
+		setClass root "completed" True
+	else return ()
+	setChildren viewDiv [toggle, label, destroy]
+	setChildren root    [viewDiv, input]
+	return TodoElem{todoModel=t, todoRootEl=root, todoToggleEl=toggle, 
+		todoDestroyEl=destroy, todoLabelEl=label, todoInputEl=input}
 
 renderActiveCount :: [Todo] -> String
 renderActiveCount [] = ""
