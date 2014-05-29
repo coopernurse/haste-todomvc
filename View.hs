@@ -3,6 +3,13 @@ module View where
 import Model
 import Haste.DOM
 
+data TodoContainerElem = TodoContainerElem {
+	allEl         :: [Elem],
+	newTodoEl     :: Elem,
+	toggleAllEl   :: Elem,
+	todoListEl    :: Elem
+}
+
 data TodoElem = TodoElem {
 	todoModel      :: Todo,
 	todoRootEl     :: Elem, 
@@ -11,6 +18,35 @@ data TodoElem = TodoElem {
 	todoLabelEl    :: Elem,
 	todoInputEl    :: Elem
 }
+
+renderContainer :: [Todo] -> IO TodoContainerElem
+renderContainer ts = do
+	header <- newElem "header"
+	setAttr header "id" "header"
+	headerTitle <- newElem "h1"
+	headerTitleText <- newTextElem "todos"
+	setChildren headerTitle [headerTitleText]
+	input  <- newElem "input"
+	setAttr input "id" "new-todo"
+	setAttr input "placeholder" "What needs to be done?"
+	setAttr input "autofocus" "autofocus"
+	setChildren header [headerTitle, input]
+	section <- newElem "section"
+	setAttr section "id" "main"
+	toggleCheckbox <- newElem "input"
+	setAttr toggleCheckbox "id" "toggle-all"
+	setAttr toggleCheckbox "type" "checkbox"
+	toggleLabel <- newElem "label"
+	toggleLabelText <- newTextElem "Mark all as complete"
+	setChildren toggleLabel [toggleLabelText]
+	setAttr toggleLabel "for" "toggle-all"
+	todoList <- newElem "ul"
+	setAttr todoList "id" "todo-list"
+	setChildren section [toggleCheckbox, toggleLabel, todoList]
+	footer <- newElem "footer"
+	setAttr footer "id" "footer"
+	return TodoContainerElem{allEl=[header,section,footer], newTodoEl=input, 
+		toggleAllEl=toggleCheckbox, todoListEl=todoList}
 
 renderTodo :: Todo -> IO TodoElem
 renderTodo t = do

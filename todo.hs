@@ -6,7 +6,7 @@ import Haste.DOM
 import View 
 import Model 
 
-main = withElems ["new-todo", "todo-list", "toggle-all"] start
+main = withElems ["todoapp"] start
 
 renderAllTodos tsRef todoList = do
   ts <- readIORef tsRef
@@ -57,6 +57,8 @@ onTodoKeyUp tsRef input todoList k = case k of
       setProp input "value" ""
   _  -> return ()
 
-start [todoInput, todoList, toggleAll] = do
+start [parentEl] = do
   tsRef <- newIORef $ []
-  onEvent todoInput OnKeyUp (onTodoKeyUp tsRef todoInput todoList)
+  container <- renderContainer []
+  setChildren parentEl (allEl container)
+  onEvent (newTodoEl container) OnKeyUp (onTodoKeyUp tsRef (newTodoEl container) (todoListEl container))
